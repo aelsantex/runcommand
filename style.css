@@ -1,0 +1,12 @@
+/* plugin:runcommand */
+
+div.rcResult {
+  width: 98%;
+  margin: 1em auto;
+  border: 1px solid gray;
+  padding: 1px;
+  /* overflow: hidden; */
+  /* background: #9cc2bb; */
+}
+
+/* end plugin:runcommand */

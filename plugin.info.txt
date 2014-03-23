@@ -1,0 +1,7 @@
+base   Runcommand
+author Alessandro Celli
+email  aelsantex@gmail.com
+date   2014-03-27
+name   Runcommand Plugin
+desc   Give the capability of execute programs or scripts
+url    http://www.dokuwiki.org/plugin:runcommand
