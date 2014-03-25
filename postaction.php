@@ -8,19 +8,27 @@
 *     2014/03/20: Added rcObjectId argument as command and outputType selector
 */
 
-function debug($msg) {	// DEBUG
-  // file_put_contents("/var/log/apache/error_log", $msg . "\n", FILE_APPEND); // SOLARIS
-  file_put_contents("/tmp/runcommand.log", print_r($msg,TRUE) . "\n", FILE_APPEND); 
+//---- CONSTANT and INCLUSION ------------------------------------------------------------------------------------------
+// must be run within Dokuwiki
+if(!defined('DOKU_INC')) {
+  define('DOKU_INC',realpath(dirname(__FILE__).'/../../..').'/');
 }
 
-$enableDebug=FALSE;
+function debug($msg,$msgLevel,$rcDebugLevel) {	// DEBUG
+  // Write log on data/cache/debug.log
+  if ($rcDebugLevel >= $msgLevel) {
+    file_put_contents(DOKU_INC."data/cache/debug.log", print_r($msg,TRUE) . "\n", FILE_APPEND); 
+  } 
+}
 
-if ($enableDebug) {
+$rcDebugLevel=0;
+
+if ($rcDebugLevel > 0) {
   //require_once '/usr/lib/php/PEAR/file_put_contents.php'; //DEBUG SOLARIS
   require_once '/usr/share/php/./PHP/Compat/Function/file_put_contents.php'; //DEBUG UBUNTU
 };
 
-if ($enableDebug) { debug($_POST); };
+debug($_POST, 2, $rcDebugLevel);
 
 // Parse arguments
 $arrayKey = array_keys($_POST);
@@ -29,10 +37,13 @@ $rcObjectId=$_POST['rcObjectId'];
 $command=$_POST['command'.$rcObjectId];
 $outputType=$_POST['outputType'.$rcObjectId];
 foreach ($arrayKey as $element) {
-	if ($element == 'command') continue;
-	if ($element == 'outputType') continue;
+	if ($element == 'command'.$rcObjectId) continue;
+	if ($element == 'outputType'.$rcObjectId) continue;
+	if ($element == 'rcObjectId') continue;
 	
-	$command=str_replace("$".$element,$_POST[$element],$command);
+	$baseElement = preg_replace('/'.$rcObjectId.'$/', '', $element);
+	$command=str_replace("$".$baseElement,$_POST[$element],$command);
+	debug("Replace: ".$baseElement." -> ".$_POST[$element]." | ".$command, 3, $rcDebugLevel);
 }
 $command=stripslashes($command);
 
@@ -57,7 +68,7 @@ switch ($outputType) {
 		$result .= "</p>\n";
 	break;
 	case 'wiki':
-		define('DOKU_INC','/var/opt/webstack/apache2/2.2/htdocs/dokuwiki/');
+		//define('DOKU_INC','/var/opt/webstack/apache2/2.2/htdocs/dokuwiki/');
 		require_once(DOKU_INC.'inc/init.php');
 		require_once(DOKU_INC.'inc/parserutils.php');
  
@@ -69,6 +80,6 @@ switch ($outputType) {
 				
 	break;
 };
-if($enableDebug) { debug("RESULT=\n".$result); }
+debug("RESULT=\n".$result, 2, $rcDebugLevel);
 print $result;
 ?> 
