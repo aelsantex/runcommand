@@ -12,6 +12,8 @@
  *     2013/09/08: Rewrite debug function to use the dokuwiki's debug function.
  *     2014/03/12: Fixed script.js: removed image after execution
  *     2014/03/20: Completed render functions
+ *     2014/03/26: Added a newline if the output type is set to choice
+ *     2014/03/26: Fixed Slider value passing to post action
  */
 
 //---- CONSTANT and INCLUSION ------------------------------------------------------------------------------------------
@@ -227,7 +229,7 @@ class syntax_plugin_runcommand extends DokuWiki_Syntax_Plugin {
 	  break;
 	  case RC_EXP_OUTPUT_TYPE:
 	    if ($element['value'] == 'choice') { // If the type is required to the user it build a list.
-	      $htmlBlock .= $this->renderFormListBox('outputType',$this->getLang('lbl_outputFormat'),'',array(
+	      $htmlBlock .= $this->renderFormListBox('outputType',$this->getLang('lbl_outputFormat'),array('newline'),array(
 		array( 'item' => 'text', 'value' => $this->getLang('fld_text')),
 		array( 'item' => 'html', 'value' => $this->getLang('fld_html')),
 		array( 'item' => 'wiki', 'value' => $this->getLang('fld_wiki'))));
@@ -347,7 +349,7 @@ class syntax_plugin_runcommand extends DokuWiki_Syntax_Plugin {
     $id = str_replace(" ","_",$name).$currentCommand;
 
     $this->debug("RENDER:FORMLISTBOX:".$name."=".$value,3);
-    $result = "<label>".$label."</label><SELECT id='".$id."'>\n";
+    $result = "<label>".$label."</label><SELECT id='".$id."'>";
     foreach($value as $listObj){
       $result .= "<option value=\"".$listObj['item']."\">".$listObj['value']."</option>";
     };
@@ -395,9 +397,9 @@ class syntax_plugin_runcommand extends DokuWiki_Syntax_Plugin {
     global $currentCommand;
     $id = str_replace(" ","_",$name).$currentCommand;
   
-    $result  = "jQuery( \"#".$id."\" ).slider({ ";
+    $result  = "jQuery( \"#".$id."_sli\" ).slider({ ";
     $result .= "min: ".$min.", max: ".$max.", value: ".$value.", step: ".$step.", orientation: \"horizontal\", animate: true, ";
-    $result .= "slide: function( event, ui ) { jQuery( \"#".$id."_val\" ).val(ui.value ); ";
+    $result .= "slide: function( event, ui ) { jQuery( \"#".$id."\" ).val(ui.value ); ";
     $result .= "} });\n";
     return $result;
   }
@@ -408,8 +410,8 @@ class syntax_plugin_runcommand extends DokuWiki_Syntax_Plugin {
 
     $this->debug("RENDER:FORMSLIDER:".$name."=".$value,3);
     $result  = "<label>".$label."</label>";
-    $result .= "<input type=\"text\" id=\"".$id."_val\" style=\"border: 0; color: #f6931f; font-weight: bold; align: right;\" value=\"".$value."\"/>";
-    $result .= "<div id=\"".$id."\" style=\"width: 260px; margin: 15px; \"></div>";
+    $result .= "<input type=\"text\" id=\"".$id."\" style=\"border: 0; color: #f6931f; font-weight: bold; align: right;\" value=\"".$value."\"/>";
+    $result .= "<div id=\"".$id."_sli\" style=\"width: 260px; margin: 15px; \"></div>";
 
     foreach ($flags as $flag) {
       if ($flag == "newline") $result = "<p>".$result."</p>\n";
