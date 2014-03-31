@@ -14,6 +14,7 @@
  *     2014/03/20: Completed render functions
  *     2014/03/26: Added a newline if the output type is set to choice
  *     2014/03/26: Fixed Slider value passing to post action
+ *     2014/03/31: Fixed bad space parse for date field
  */
 
 //---- CONSTANT and INCLUSION ------------------------------------------------------------------------------------------
@@ -180,17 +181,17 @@ class syntax_plugin_runcommand extends DokuWiki_Syntax_Plugin {
   }
   
   function parseFieldSlider($args){
-    preg_match_all("/([^;= ]+):([^;= ]+)/", $args, $r);
+    preg_match_all("/([^;=]+):([^;=]+)/", $args, $r);
     return array_combine($r[1], $r[2]);
   }
   
   function parseFieldSpinner($args){
-    preg_match_all("/([^;= ]+):([^;= ]+)/", $args, $r);
+    preg_match_all("/([^;=]+):([^;=]+)/", $args, $r);
     return array_combine($r[1], $r[2]);
   }
   
   function parseFieldDate($args){
-    preg_match_all("/([^;= ]+):([^;= ]+)/", $args, $r);
+    preg_match_all("/([^;=]+):([^;=]+)/", $args, $r);
     return array_combine($r[1], $r[2]);
   }
   
