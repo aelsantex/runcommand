@@ -77,7 +77,7 @@ class syntax_plugin_runcommand extends DokuWiki_Syntax_Plugin {
 
   // BY_DOC: to prepare the matched syntax for use in the renderer
   // This plugin works with the state: DOKU_LEXER_ENTER, DOKU_LEXER_UNMATCH and DOKU_LEXER_EXIT 
-  function handle($match, $state, $pos, &$handler){
+  function handle($match, $state, $pos, Doku_Handler $handler){
     //if ($state <> DOKU_LEXER_ENTER) { exit; };
     $argId = 1;
 
@@ -196,7 +196,7 @@ class syntax_plugin_runcommand extends DokuWiki_Syntax_Plugin {
   }
   
 
-  function render($mode, &$renderer, $data) {
+  function render($mode, Doku_Renderer $renderer, $data) {
     global $currentCommand;	// Global variable who keep the unique Id of the runcommand form.
     $currentCommand += 1;
     
